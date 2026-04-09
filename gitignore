@@ -1,0 +1,16 @@
+# Java build output
+bin/
+*.class
+
+# IDE / editor files
+.vscode/
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# SQLite sidecar files
+*.db-shm
+*.db-wal
