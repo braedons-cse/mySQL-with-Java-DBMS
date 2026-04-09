@@ -58,7 +58,15 @@ public class SQL {
      */
     public static void sqlQuery(Connection conn, PreparedStatement sql){
         try {
-        	ResultSet rs = sql.executeQuery();
+        	boolean hasResultSet = sql.execute();
+
+        	if (!hasResultSet) {
+        		System.out.println("Rows affected: " + sql.getUpdateCount());
+        		sql.close();
+        		return;
+        	}
+
+        	ResultSet rs = sql.getResultSet();
         	ResultSetMetaData rsmd = rs.getMetaData();
         	int columnCount = rsmd.getColumnCount();
         	for (int i = 1; i <= columnCount; i++) {
@@ -76,7 +84,7 @@ public class SQL {
     			System.out.print("\n");
         	}
         	rs.close();
-        	ps.close();
+        	sql.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -224,7 +232,7 @@ public class SQL {
    
    public static void ps_setLName(String l, int id) {
 	      try{
-	    	  String sql = "UPDATE CUSTOMER SET Fname = ? WHERE User_id = ?";
+	    	  String sql = "UPDATE CUSTOMER SET Lname = ? WHERE User_id = ?";
 	    	  ps = App.conn.prepareStatement(sql);
 	    	  ps.setString(1, l);
 	    	  ps.setInt(2, id);
@@ -598,7 +606,7 @@ public class SQL {
    public static void ps_UsefulReport1(int id) {
 	      try{
 	    	  System.out.println("Total Number of Equipment Items Rented by Given Customer:");
-	    	  String sql = "SELECT Type, Date_of_arrival FROM CUSTOMER AS C, RENTAL AS R, EQUIPMENT_RENTALS AS ER, EQUIPMENT AS E WHERE C.User_id = R.Rented_from_customer AND R.Rental_Number = ER.Rental_no AND E.Serial_Number = ER.Equip_serial_no AND C.User_id = ?;";
+	    	  String sql = "SELECT COUNT(*) AS Total_Items_Rented FROM CUSTOMER AS C, RENTAL AS R, EQUIPMENT_RENTALS AS ER WHERE C.User_id = R.Rented_from_customer AND R.Rental_Number = ER.Rental_no AND C.User_id = ?;";
 	    	  		
 	    	  ps = App.conn.prepareStatement(sql);
 	    	  ps.setInt(1, id);
@@ -736,13 +744,14 @@ public class SQL {
 	      
 	      sqlQuery(App.conn, ps); 
 }
-   public static void ps_updateDelivery(int droneSNo, int custID, Date deliveryDate) {
+   public static void ps_updateDelivery(int droneSNo, int custID, int rentalNo, Date deliveryDate) {
 	      try {    	      	  
-	    	  String sql = "UPDATE RENTAL SET Delivery_drone = ?, Date_of_arrival = ? WHERE Rented_from_customer = ?";
+	    	  String sql = "UPDATE RENTAL SET Delivery_drone = ?, Date_of_arrival = ? WHERE Rented_from_customer = ? AND Rental_Number = ?";
 	    	  ps = App.conn.prepareStatement(sql);
 	    	 ps.setInt(1, droneSNo);
 	    	 ps.setDate(2, deliveryDate);
 	    	 ps.setInt(3, custID);
+	    	 ps.setInt(4, rentalNo);
 	     
 	      }
 	      catch (SQLException e) {
@@ -752,13 +761,14 @@ public class SQL {
 	      sqlQuery(App.conn, ps); 
 }
    
-   public static void ps_updatePickup(int droneSNo, int custID, Date pickupDate) {
+   public static void ps_updatePickup(int droneSNo, int custID, int rentalNo, Date pickupDate) {
 	      try {    	      	  
-	    	  String sql = "UPDATE RENTAL SET Pickup_drone = ?, Date_of_return = ? WHERE Rented_from_customer = ?";
+	    	  String sql = "UPDATE RENTAL SET Pickup_drone = ?, Date_of_return = ? WHERE Rented_from_customer = ? AND Rental_Number = ?";
 	    	  ps = App.conn.prepareStatement(sql);
 	    	 ps.setInt(1, droneSNo);
 	    	 ps.setDate(2, pickupDate);
 	    	 ps.setInt(3, custID);
+	    	 ps.setInt(4, rentalNo);
 	     
 	      }
 	      catch (SQLException e) {
