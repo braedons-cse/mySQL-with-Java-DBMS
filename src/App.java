@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -7,7 +6,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Scanner;
 public class App {
-	private static String DATABASE = "rentalCompany (3).db";
+	private static final String DATABASE = "rentalCompany.db";
 	
 	public static Connection conn = null;
 	
@@ -358,8 +357,8 @@ public class App {
                 
                 int rentalNo = (int)((Math.random()*100)+220220);	//generates a rentalNumber for the new rental
                 int cost = (int)((Math.random()*100)+5);	//generates a cost for the new rental
-                Date doa = Date.valueOf("2024-04-12");		//sets date of arrival as "current" date
-                Date dor = Date.valueOf("2024-05-10");		//sets date of return as a month later, an expected/default return date
+                Date doa = Date.valueOf(LocalDate.now());		//sets date of arrival as today's date
+                Date dor = Date.valueOf(LocalDate.now().plusMonths(1));		//sets date of return as one month later
                 int pickupDrone = 123456;		//default delivery and pickup drone since they haven't selected delivery or pickup yet
                 int deliveryDrone = 123456;
                 
@@ -410,13 +409,16 @@ public class App {
                 System.out.println("Enter the delivery date you'd like, in the form yyyy-mm-dd");
                 String deliveryTime = keyboard.nextLine();
                 Date deliveryDate = Date.valueOf(deliveryTime);
+                System.out.println("Enter the rental number to update for the delivery.");
+                int rentalNo = keyboard.nextInt();
+                keyboard.nextLine();    //consume the '\n' not consumed by nextInt()
                 System.out.println("Enter the drone serial number for the delivery.");
                 int droneSNo = keyboard.nextInt();
                 keyboard.nextLine();    //consume the '\n' not consumed by nextInt()
                 
                 
                 //update delivery drone and delivery date
-              SQL.ps_updateDelivery(droneSNo, custID, deliveryDate);
+              SQL.ps_updateDelivery(droneSNo, custID, rentalNo, deliveryDate);
                 
                 System.out.println("Equipment delivered.");
             }
@@ -428,13 +430,16 @@ public class App {
                 System.out.println("Enter the pickup date you'd like, in the form yyyy-mm-dd");
                 String pickupTime = keyboard.nextLine();
                 Date pickupDate = Date.valueOf(pickupTime);
+                System.out.println("Enter the rental number to update for the pickup.");
+                int rentalNo = keyboard.nextInt();
+                keyboard.nextLine();    //consume the '\n' not consumed by nextInt()
                 System.out.println("Enter the drone serial number for the pickup.");
                 int droneSNo = keyboard.nextInt();
                 keyboard.nextLine();    //consume the '\n' not consumed by nextInt()
                 
                 
                 //update pickup drone and pickup date
-              SQL.ps_updatePickup(droneSNo, custID, pickupDate);
+              SQL.ps_updatePickup(droneSNo, custID, rentalNo, pickupDate);
                 
                 System.out.println("Equipment picked up."); 
             }
