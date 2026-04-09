@@ -50,13 +50,6 @@ mySQL-with-Java-DBMS/
 - SQLite JDBC driver on your classpath
 - A Java IDE or command-line setup
 
-## Database file
-The app is intended to use:
-```text
-rentalCompany.db
-```
-
-If your code still points to `rentalCompany (3).db`, update it so the application uses the committed database file in the repo.
 
 ## How to run
 
