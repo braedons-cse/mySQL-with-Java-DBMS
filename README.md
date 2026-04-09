@@ -79,4 +79,4 @@ When you launch the program, the main menu provides:
 - Reports
 
 ## Status
-This is a solid class project foundation, but it still needs cleanup and a few correctness fixes before it is ready to show as a polished public portfolio project.
+This is a class final project that recieved a 98% @osu CSE 3241
